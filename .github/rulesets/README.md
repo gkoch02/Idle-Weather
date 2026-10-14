@@ -1,8 +1,9 @@
 # Branch rulesets
 
-`main-branch.json` is the protection applied to `main`, modelled on Idle Hours':
+`main-branch.json` is the protection applied to `main`, modelled on Idle Hours' and HomeDashboard's:
 
 - `main` can't be deleted or force-pushed.
+- Changes go through a pull request, with no approval needed. Review threads must be resolved before merging.
 - The `test` CI job (lint and pytest) must pass.
 
 GitHub doesn't read this file. After editing it, push the change yourself:
