@@ -21,7 +21,7 @@ from idle_weather.conditions import Observation
 API_URL = "https://api.open-meteo.com/v1/forecast"
 CURRENT_FIELDS = ("temperature_2m", "weather_code", "wind_speed_10m", "wind_gusts_10m", "is_day")
 TIMEOUT_SECONDS = 15
-USER_AGENT = "Idle-Weather (+https://github.com/gkoch02/Idle-Weather)"
+USER_AGENT = "Idle-Weather (+https://github.com/gkoch02/IdleWeather)"
 # An observation older than this is not "the current weather" any more.
 MAX_AGE_SECONDS = 3 * 60 * 60
 

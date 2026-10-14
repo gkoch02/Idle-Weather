@@ -1,8 +1,8 @@
 # Idle Weather
 
-[![CI](https://github.com/gkoch02/Idle-Weather/actions/workflows/ci.yml/badge.svg)](https://github.com/gkoch02/Idle-Weather/actions/workflows/ci.yml)
+[![CI](https://github.com/gkoch02/IdleWeather/actions/workflows/ci.yml/badge.svg)](https://github.com/gkoch02/IdleWeather/actions/workflows/ci.yml)
 
-Idle Weather is [Idle Hours](https://github.com/gkoch02/Idle-Hours) for the sky outside: it reads the current weather from Open-Meteo and shows a sentence from a public-domain novel that describes it, with the weather phrase picked out in bold. It renders through Idle Hours' themes onto the same 800×480 Inky Impression Spectra 6 panel.
+Idle Weather is [Idle Hours](https://github.com/gkoch02/IdleHours) for the sky outside: it reads the current weather from Open-Meteo and shows a sentence from a public-domain novel that describes it, with the weather phrase picked out in bold. It renders through Idle Hours' themes onto the same 800×480 Inky Impression Spectra 6 panel.
 
 ![Four Idle Weather renders: heavy rain in newsprint, snow in dark, fog in sampler, a clear night in firmament](docs/images/preview.png)
 
@@ -26,7 +26,7 @@ python3 -m venv .venv
 .venv/bin/pip install -e ".[dev]"      # add [pi] on the Raspberry Pi for the Inky stack
 ```
 
-On a Raspberry Pi, follow Idle Hours' [Pi setup guide](https://github.com/gkoch02/Idle-Hours/blob/main/docs/pi_setup_inky_impression.md) for SPI/I2C and the GPIO packages, then install this package into the venv with `.[pi]`.
+On a Raspberry Pi, follow Idle Hours' [Pi setup guide](https://github.com/gkoch02/IdleHours/blob/main/docs/pi_setup_inky_impression.md) for SPI/I2C and the GPIO packages, then install this package into the venv with `.[pi]`.
 
 ## Use
 
