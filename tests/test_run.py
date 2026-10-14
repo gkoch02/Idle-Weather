@@ -114,3 +114,16 @@ def test_renderer_gets_an_expanded_database_path(tmp_path, monkeypatch):
     runner.tick(datetime(2026, 10, 14, 9, 0))
     cmd = calls[0]
     assert cmd[cmd.index("--database") + 1] == str(db)
+
+
+def test_repaints_when_the_shown_fallback_no_longer_fits(tmp_path):
+    hot_clear = Observation(1, 33.0, 5.0, 10.0, True)
+    hot_overcast = Observation(3, 33.0, 5.0, 10.0, True)
+    runner, calls = make(tmp_path, hot_clear)
+    # Every heat quote shown recently, so the clear-sky pick falls back to sunshine.
+    runner.database = {"heat": [], "sunshine": runner.database["sunshine"], "clouds": runner.database["clouds"]}
+    assert "(from sunshine)" in runner.tick(datetime(2026, 10, 14, 13, 0))
+    assert runner.tick(datetime(2026, 10, 14, 13, 5)) == "idle"
+    runner.weather.obs = hot_overcast
+    assert "(from clouds)" in runner.tick(datetime(2026, 10, 14, 13, 10))
+    assert len(calls) == 2
