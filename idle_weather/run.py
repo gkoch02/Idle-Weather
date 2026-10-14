@@ -138,6 +138,8 @@ class State:
     """What the loop remembers across restarts."""
 
     last_condition: str | None = None
+    # The pool the shown quote came from, which may be a fallback.
+    last_drawn_from: str | None = None
     last_paint_at: float | None = None
     last_key: str | None = None
     last_theme: str | None = None
@@ -227,6 +229,9 @@ class Runner:
             not self._painted_this_run
             or self.state.quiet
             or self.state.last_condition != primary
+            # The weather is the same but the quote's pool no longer fits it
+            # (a sunshine fallback for heat, once the sky turns overcast).
+            or (self.state.last_drawn_from is not None and self.state.last_drawn_from not in conditions)
             or self.state.last_paint_at is None
             or ts - self.state.last_paint_at >= self.config.rotate_minutes * 60
         )
@@ -243,6 +248,7 @@ class Runner:
         append_history(self.history_file, row, drawn_from, at=ts)
         self.state.quiet = False
         self.state.last_condition = primary
+        self.state.last_drawn_from = drawn_from
         self.state.last_key = row["key"]
         self.state.last_theme = theme
         self.state.save(self.state_file)

@@ -101,8 +101,8 @@ def primary_condition(obs: Observation) -> str:
     """The one condition that best names ``obs``.
 
     Precipitation and fog come from the WMO code alone. A dry sky is wind when
-    it blows hard enough, frost below freezing, heat on a hot clear day, then
-    sunshine, a clear night, or cloud.
+    it blows hard enough, frost below freezing, heat on a hot day under any
+    sky, then sunshine, a clear night, or cloud.
     """
     code = obs.weather_code
     if code in _THUNDER_CODES:
@@ -124,7 +124,7 @@ def primary_condition(obs: Observation) -> str:
     if obs.temperature_c <= FROST_C:
         return "frost"
     clear = code in (0, 1)
-    if obs.is_day and code <= 2 and obs.temperature_c >= HEAT_C:
+    if obs.is_day and code <= 3 and obs.temperature_c >= HEAT_C:
         return "heat"
     if clear:
         return "sunshine" if obs.is_day else "night_sky"
@@ -141,6 +141,9 @@ def conditions_for(obs: Observation) -> list[str]:
     """
     primary = primary_condition(obs)
     keys = list(FALLBACKS[primary])
+    # Heat under an overcast sky borrows from cloud, not sunshine.
+    if primary == "heat" and obs.weather_code == 3:
+        keys = ["heat", "clouds"]
     if primary != "wind" and (obs.wind_kmh >= WIND_KMH or obs.gust_kmh >= GUST_KMH):
         keys.append("wind")
     return _dedupe(keys)
