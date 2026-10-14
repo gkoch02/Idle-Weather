@@ -2,6 +2,7 @@ from datetime import datetime
 
 import pytest
 
+from idle_weather.bake import DATABASE_PATH
 from idle_weather.conditions import Observation
 from idle_weather.run import CONFIG_ERROR_EXIT, ConfigError, Runner, load_config, main
 from idle_weather.weather import Reading
@@ -84,3 +85,32 @@ def test_config_errors(tmp_path):
     with pytest.raises(ConfigError):
         load_config(bad, {})
     assert main(["--config", str(bad), "--pidfile", ""]) == CONFIG_ERROR_EXIT
+
+
+@pytest.mark.parametrize(
+    "toml",
+    ['latitude = "51.5"\nlongitude = 0.0\n', 'latitude = 51.5\nlongitude = 0.0\nrotate_minutes = "30"\n',
+     'latitude = 51.5\nlongitude = 0.0\nrotate_minutes = true\n', 'latitude = 51.5\nlongitude = 0.0\ndisplay = "yes"\n'],
+)
+def test_wrong_toml_types_are_config_errors(tmp_path, toml):
+    path = tmp_path / "c.toml"
+    path.write_text(toml)
+    with pytest.raises(ConfigError):
+        load_config(path, {})
+    assert main(["--config", str(path), "--pidfile", ""]) == CONFIG_ERROR_EXIT
+
+
+def test_integer_coordinates_are_fine(tmp_path):
+    path = tmp_path / "c.toml"
+    path.write_text("latitude = 51\nlongitude = 0\nrotate_minutes = 30\n")
+    assert load_config(path, {}).latitude == 51
+
+
+def test_renderer_gets_an_expanded_database_path(tmp_path, monkeypatch):
+    monkeypatch.setenv("HOME", str(tmp_path))
+    db = tmp_path / "weather.jsonl"
+    db.write_text(DATABASE_PATH.read_text(encoding="utf-8"), encoding="utf-8")
+    runner, calls = make(tmp_path, RAIN, database="~/weather.jsonl")
+    runner.tick(datetime(2026, 10, 14, 9, 0))
+    cmd = calls[0]
+    assert cmd[cmd.index("--database") + 1] == str(db)

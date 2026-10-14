@@ -60,6 +60,7 @@ class Config:
     database: str = str(DATABASE_PATH)
 
     def validate(self) -> None:
+        self._check_types()
         if self.latitude is None or self.longitude is None:
             raise ConfigError("latitude and longitude are required")
         if not (-90 <= self.latitude <= 90 and -180 <= self.longitude <= 180):
@@ -78,12 +79,38 @@ class Config:
                     datetime.strptime(value, "%H:%M")
                 except ValueError as exc:
                     raise ConfigError(f"quiet hours must be HH:MM, not {value!r}") from exc
-        if not Path(self.database).expanduser().exists():
+        if not self.database_path.exists():
             raise ConfigError(f"quote database not found: {self.database}")
+
+    def _check_types(self) -> None:
+        """Reject a value of the wrong type, which TOML allows (``latitude = "51.5"``)."""
+        for f in fields(self):
+            value = getattr(self, f.name)
+            if value is None and f.name in _OPTIONAL_FIELDS:
+                continue
+            expected = _FIELD_TYPES[f.name]
+            # bool is an int subclass: ``rotate_minutes = true`` is not a number.
+            if isinstance(value, bool) and expected is not bool:
+                raise ConfigError(f"{f.name} must be {expected.__name__}, not {value!r}")
+            if expected is float and isinstance(value, int):
+                continue
+            if not isinstance(value, expected):
+                raise ConfigError(f"{f.name} must be {expected.__name__}, not {value!r}")
+
+    @property
+    def database_path(self) -> Path:
+        return Path(self.database).expanduser()
 
     @property
     def state_path(self) -> Path:
         return Path(self.state_dir).expanduser()
+
+
+_FIELD_TYPES: dict[str, type] = {
+    "latitude": float, "longitude": float, "theme": str, "rotate_minutes": float, "weather_minutes": float,
+    "quiet_start": str, "quiet_end": str, "display": bool, "mode": str, "state_dir": str, "output": str, "database": str,
+}
+_OPTIONAL_FIELDS = frozenset({"latitude", "longitude", "quiet_start", "quiet_end"})
 
 
 def load_config(path: Path | None, overrides: dict) -> Config:
@@ -142,7 +169,7 @@ class Runner:
         self.state_file = config.state_path / "state.json"
         self.history_file = config.state_path / "history.jsonl"
         self.state = State.load(self.state_file)
-        self.database = load_database(Path(config.database).expanduser())
+        self.database = load_database(config.database_path)
         self.weather = weather or WeatherSource(
             config.latitude, config.longitude, config.state_path / "weather.json", config.weather_minutes * 60
         )
@@ -164,7 +191,7 @@ class Runner:
         output = str(Path(self.config.output).expanduser())
         self._run(
             [sys.executable, "-m", "idle_weather.render", *render_args, "--theme", theme,
-             "--mode", self.config.mode, "--database", self.config.database, "--output", output],
+             "--mode", self.config.mode, "--database", str(self.config.database_path), "--output", output],
             check=True, timeout=RENDER_TIMEOUT_SECONDS,
         )
         if self.config.display:

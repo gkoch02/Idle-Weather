@@ -88,7 +88,7 @@ def main(argv: list[str] | None = None) -> int:
     time_str = args.time or datetime.now().strftime("%H:%M")
     row = None
     if not args.sleep:
-        database = load_database(Path(args.database))
+        database = load_database(Path(args.database).expanduser())
         if args.key:
             row = find_row(database, args.key)
         else:
