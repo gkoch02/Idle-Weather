@@ -8,8 +8,8 @@
 GitHub doesn't read this file. After editing it, push the change yourself:
 
 ```bash
-RULESET_ID=$(gh api /repos/gkoch02/Idle-Weather/rulesets --jq '.[] | select(.name=="Protect main") | .id')
-gh api --method PUT "/repos/gkoch02/Idle-Weather/rulesets/$RULESET_ID" --input .github/rulesets/main-branch.json
+RULESET_ID=$(gh api /repos/gkoch02/IdleWeather/rulesets --jq '.[] | select(.name=="Protect main") | .id')
+gh api --method PUT "/repos/gkoch02/IdleWeather/rulesets/$RULESET_ID" --input .github/rulesets/main-branch.json
 ```
 
 If you add a CI job, add it to `required_status_checks` too. A required check must report on every PR, so CI has no paths filter.
