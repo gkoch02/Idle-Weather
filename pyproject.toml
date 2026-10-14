@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "idle-weather"
+version = "0.1.0"
+description = "Idle Weather: the current weather as a sentence from a public-domain novel, on an Inky Impression eInk panel."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.11"
+dependencies = [
+    # The renderer, its themes and fonts, and the appliance plumbing
+    # (atomic writes, pidfile, sd_notify, the Inky bridge) come from Idle Hours.
+    "idle-hours @ git+https://github.com/gkoch02/Idle-Hours@8e31ec25aab1b83f01ab7a7ebe1b91da61058dd5",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "ruff"]
+pi = ["idle-hours[pi] @ git+https://github.com/gkoch02/Idle-Hours@8e31ec25aab1b83f01ab7a7ebe1b91da61058dd5"]
+
+[project.scripts]
+idle-weather = "idle_weather.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["idle_weather*"]
+
+[tool.setuptools.package-data]
+idle_weather = ["assets/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 130
+target-version = "py311"
