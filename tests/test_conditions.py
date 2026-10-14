@@ -29,6 +29,9 @@ def test_dry_sky_rules():
     assert primary_condition(obs(2, day=False)) == "clouds"
     assert primary_condition(obs(1, temp=33)) == "heat"
     assert primary_condition(obs(1, temp=33, day=False)) == "night_sky"
+    assert primary_condition(obs(3, temp=33)) == "heat"
+    assert primary_condition(obs(3, temp=33, day=False)) == "clouds"
+    assert primary_condition(obs(3, temp=28)) == "clouds"
     assert primary_condition(obs(0, temp=-4)) == "frost"
     assert primary_condition(obs(3, wind=60)) == "wind"
     assert primary_condition(obs(3, gust=80)) == "wind"
@@ -37,3 +40,8 @@ def test_dry_sky_rules():
 def test_precipitation_wins_over_wind_but_wind_is_offered():
     assert conditions_for(obs(61, wind=60)) == ["rain", "drizzle", "downpour", "wind"]
     assert conditions_for(obs(61)) == ["rain", "drizzle", "downpour"]
+
+
+def test_overcast_heat_falls_back_to_cloud_not_sunshine():
+    assert conditions_for(obs(3, temp=33)) == ["heat", "clouds"]
+    assert conditions_for(obs(1, temp=33)) == ["heat", "sunshine"]
