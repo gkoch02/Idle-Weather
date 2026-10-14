@@ -1,0 +1,29 @@
+# Idle Weather settings. Every key can also be given as a flag
+# (--latitude, --rotate-minutes, ...); flags win.
+
+# Where to read the weather (decimal degrees). Required.
+latitude = 51.4769
+longitude = -0.0005
+
+# Any Idle Hours theme name, or "random" for a shuffled rotation.
+theme = "random"
+
+# Show a new quote this often even when the weather holds (minutes).
+# A change of weather repaints straight away.
+rotate_minutes = 30
+
+# Ask Open-Meteo this often (minutes).
+weather_minutes = 10
+
+# Paint the sleep frame once and stay idle between these times (HH:MM, local).
+quiet_start = "23:00"
+quiet_end = "07:00"
+
+# Push frames to the Inky Impression. Off renders the PNG only.
+display = true
+
+# "debug" adds Idle Hours' banner and a footer with the time and condition.
+mode = "production"
+
+state_dir = "/var/lib/idle-weather"
+output = "/var/lib/idle-weather/current.png"
