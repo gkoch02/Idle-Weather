@@ -17,7 +17,7 @@ from pathlib import Path
 
 from idle_hours import atomic_io
 from idle_hours.runtime_theme import random_theme_pool
-from idle_hours.theme_names import CLOCK_FURNITURE_THEMES
+from idle_hours.theme_names import TIME_SURFACE_THEMES
 
 from idle_weather.bake import DATABASE_PATH
 from idle_weather.conditions import CONDITIONS, LABELS
@@ -51,8 +51,9 @@ def find_row(database: dict[str, list[dict]], key: str) -> dict:
 
 def theme_pool() -> tuple[str, ...]:
     """The themes ``random`` draws from: Idle Hours' rotation without the ones
-    that draw the time or print the Idle Hours name, which a weather frame is not."""
-    return tuple(t for t in random_theme_pool() if t not in CLOCK_FURNITURE_THEMES)
+    that draw the time, since a weather frame is not a clock and stays up for
+    half an hour."""
+    return tuple(t for t in random_theme_pool() if t not in TIME_SURFACE_THEMES)
 
 
 def resolve_theme(theme: str) -> str:

@@ -26,7 +26,7 @@ from idle_hours import atomic_io, sd_notify
 from idle_hours.pidfile import PidfileLockedError, acquire_pidfile
 from idle_hours.runtime_quiet import in_quiet_hours
 from idle_hours.runtime_theme import pick_next_random_theme, recent_window_size
-from idle_hours.theme_names import CLOCK_FURNITURE_THEMES, THEME_ORDER
+from idle_hours.theme_names import THEME_ORDER, TIME_SURFACE_THEMES
 
 from idle_weather.bake import DATABASE_PATH
 from idle_weather.conditions import LABELS, conditions_for
@@ -323,8 +323,8 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         sd_notify.notify_ready()
         log(f"started at {config.latitude}, {config.longitude}; theme {config.theme}")
-        if config.theme in CLOCK_FURNITURE_THEMES:
-            log(f"theme {config.theme} draws the time or the Idle Hours name; 'random' leaves such themes out")
+        if config.theme in TIME_SURFACE_THEMES:
+            log(f"theme {config.theme} draws the time; 'random' leaves such themes out")
         last = None
         while True:
             message = runner.tick(datetime.now())
