@@ -6,7 +6,7 @@ latitude = 51.4769
 longitude = -0.0005
 
 # Any Idle Hours theme name, or "random" for a shuffled rotation of the themes
-# that do not draw the time.
+# that do not show a clock.
 theme = "random"
 
 # Show a new quote this often even when the weather holds (minutes).

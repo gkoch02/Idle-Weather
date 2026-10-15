@@ -49,11 +49,32 @@ def find_row(database: dict[str, list[dict]], key: str) -> dict:
     raise SystemExit(f"No quote with key {key!r} in the database")
 
 
+# Themes that draw the time they are given (Idle Hours' TIME_SURFACE_THEMES)
+# without reading as a clock: the hour is a tarot numeral, a stop or exit number,
+# a gauge, a section plate. A glance sees decoration, so an hour that is half an
+# hour stale on a weather panel does no harm. Picked by looking at each frame. A
+# time surface not listed here, including any new one, stays out of random until
+# someone looks at it; the ones left out show a clock time, "PM", or a label
+# reading HOUR or VALID (vhs, platform, cardcatalog, bakelite, reactornight,
+# synoptic).
+DECORATIVE_TIME_THEMES: frozenset[str] = frozenset({
+    "abyssal", "atropos", "beksinski", "betweenus", "betweenus_dark", "biomech", "bladerunner", "codex",
+    "culture", "dsky", "expanse", "expedition", "gantry", "hades", "hal", "hippochomp", "hitchhiker",
+    "izakaya", "lasvegas", "lieder", "lumon", "metro", "oblivion", "observation", "orbital", "plaque",
+    "pourjudgment", "pulp", "saros", "semiotic", "tarot", "traumateam", "trisolaris", "vitrail", "witcher",
+    "yorha",
+})
+
+
+def shows_a_clock(theme: str) -> bool:
+    """Whether a theme draws the time in a way that reads as one."""
+    return theme in TIME_SURFACE_THEMES and theme not in DECORATIVE_TIME_THEMES
+
+
 def theme_pool() -> tuple[str, ...]:
     """The themes ``random`` draws from: Idle Hours' rotation without the ones
-    that draw the time, since a weather frame is not a clock and stays up for
-    half an hour."""
-    return tuple(t for t in random_theme_pool() if t not in TIME_SURFACE_THEMES)
+    that show a clock, since a weather frame stays up for half an hour."""
+    return tuple(t for t in random_theme_pool() if not shows_a_clock(t))
 
 
 def resolve_theme(theme: str) -> str:

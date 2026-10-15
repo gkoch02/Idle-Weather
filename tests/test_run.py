@@ -129,11 +129,11 @@ def test_repaints_when_the_shown_fallback_no_longer_fits(tmp_path):
     assert len(calls) == 2
 
 
-def test_random_rotation_skips_time_surfaces(tmp_path):
-    from idle_hours.theme_names import TIME_SURFACE_THEMES
+def test_random_rotation_skips_clocks(tmp_path):
+    from idle_weather.render import shows_a_clock
 
     runner, _calls = make(tmp_path, RAIN, theme="random")
-    runner.state.theme_bag = ["tarot", "saloon"]  # saved before tarot left the pool
-    picks = [runner.next_theme() for _ in range(60)]
+    runner.state.theme_bag = ["vhs", "saloon"]  # saved before vhs left the pool
+    picks = [runner.next_theme() for _ in range(200)]
     assert picks[0] == "saloon"
-    assert not set(picks) & TIME_SURFACE_THEMES
+    assert not any(shows_a_clock(t) for t in picks)
