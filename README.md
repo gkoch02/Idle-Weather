@@ -65,6 +65,8 @@ ruff check .
 
 The database tests check that every shipped quote was accepted in review, that every condition has a pool, and that Idle Hours' renderer can find and highlight every phrase.
 
+CI runs the suite twice: `test` against the Idle Hours commit pinned in `pyproject.toml` (required), and `idle-hours-main` against Idle Hours' `main` (advisory, also daily). A red `idle-hours-main` means the next pin bump will break something; fix it before bumping. On the Idle Hours side, `tests/test_downstream_contract.py` lists the names Idle Weather imports, so a breaking change usually fails there first. Import something new from Idle Hours, and add it to that list.
+
 ## Known limits
 
 - A few Idle Hours themes print "Idle Hours" or a clock face in their furniture; they show the current time, not the weather.

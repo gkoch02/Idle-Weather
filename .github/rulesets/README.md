@@ -13,4 +13,4 @@ RULESET_ID=$(gh api /repos/gkoch02/IdleWeather/rulesets --jq '.[] | select(.name
 gh api --method PUT "/repos/gkoch02/IdleWeather/rulesets/$RULESET_ID" --input .github/rulesets/main-branch.json
 ```
 
-If you add a CI job, add it to `required_status_checks` too. A required check must report on every PR, so CI has no paths filter.
+If you add a CI job, add it to `required_status_checks` too, unless it is advisory. `idle-hours-main` is: it tests against Idle Hours' `main`, which can break without any change here, so it must not block merges. A required check must report on every PR, so CI has no paths filter.
