@@ -25,12 +25,13 @@ from pathlib import Path
 from idle_hours import atomic_io, sd_notify
 from idle_hours.pidfile import PidfileLockedError, acquire_pidfile
 from idle_hours.runtime_quiet import in_quiet_hours
-from idle_hours.runtime_theme import pick_next_random_theme, random_theme_pool, recent_window_size
-from idle_hours.theme_names import THEME_ORDER
+from idle_hours.runtime_theme import pick_next_random_theme, recent_window_size
+from idle_hours.theme_names import CLOCK_FURNITURE_THEMES, THEME_ORDER
 
 from idle_weather.bake import DATABASE_PATH
 from idle_weather.conditions import LABELS, conditions_for
 from idle_weather.pick import append_history, load_database, pick, read_history
+from idle_weather.render import theme_pool
 from idle_weather.weather import WeatherSource
 
 CONFIG_ERROR_EXIT = 42
@@ -183,8 +184,11 @@ class Runner:
     def next_theme(self) -> str:
         if self.config.theme != "random":
             return self.config.theme
-        theme, bag = pick_next_random_theme(self.state.theme_bag, recent=self.state.recent_themes)
-        window = recent_window_size(len(random_theme_pool()))
+        pool = theme_pool()
+        # A bag saved before a theme left the pool can still hold it.
+        bag = [t for t in self.state.theme_bag if t in pool]
+        theme, bag = pick_next_random_theme(bag, recent=self.state.recent_themes, pool=pool)
+        window = recent_window_size(len(pool))
         self.state.theme_bag = bag
         self.state.recent_themes = (self.state.recent_themes + [theme])[-window:]
         return theme
@@ -319,6 +323,8 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         sd_notify.notify_ready()
         log(f"started at {config.latitude}, {config.longitude}; theme {config.theme}")
+        if config.theme in CLOCK_FURNITURE_THEMES:
+            log(f"theme {config.theme} draws the time or the Idle Hours name; 'random' leaves such themes out")
         last = None
         while True:
             message = runner.tick(datetime.now())

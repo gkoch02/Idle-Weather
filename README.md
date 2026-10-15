@@ -37,7 +37,7 @@ idle-weather run --config config.toml                  # the appliance loop
 idle-weather run --config config.toml --once           # one tick, then exit
 ```
 
-Copy [`config.toml.example`](config.toml.example) and set your latitude and longitude. The loop repaints when the condition changes and otherwise every `rotate_minutes` (default 30), checks the weather every `weather_minutes` (default 10), and paints Idle Hours' sleep frame once on entering quiet hours. `theme = "random"` shuffles through Idle Hours' random rotation without repeats. Any setting can be given as a flag instead.
+Copy [`config.toml.example`](config.toml.example) and set your latitude and longitude. The loop repaints when the condition changes and otherwise every `rotate_minutes` (default 30), checks the weather every `weather_minutes` (default 10), and paints Idle Hours' sleep frame once on entering quiet hours. `theme = "random"` shuffles without repeats through Idle Hours' random rotation, minus the themes that draw the time or print the Idle Hours name (`CLOCK_FURNITURE_THEMES` in Idle Hours' `theme_names.py`, kept accurate by its tests). You can still name one of those themes explicitly; the loop logs a warning when you do. Any setting can be given as a flag instead.
 
 State lives in `state_dir`: `state.json` (last condition, theme bag), `history.jsonl` (the anti-repeat ledger) and `weather.json` (the last good reading).
 
@@ -69,5 +69,5 @@ CI runs the suite twice: `test` against the Idle Hours commit pinned in `pyproje
 
 ## Known limits
 
-- A few Idle Hours themes print "Idle Hours" or a clock face in their furniture; they show the current time, not the weather.
+- About half of Idle Hours' themes draw the time (an hour numeral, a stamp, a clock) or print "Idle Hours", so `random` uses the other half. A theme comes back automatically once Idle Hours teaches it to draw nothing time-related.
 - Titles come from Gutenberg headers as they are, subtitles included.

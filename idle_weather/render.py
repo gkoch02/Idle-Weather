@@ -16,6 +16,8 @@ from datetime import datetime
 from pathlib import Path
 
 from idle_hours import atomic_io
+from idle_hours.runtime_theme import random_theme_pool
+from idle_hours.theme_names import CLOCK_FURNITURE_THEMES
 
 from idle_weather.bake import DATABASE_PATH
 from idle_weather.conditions import CONDITIONS, LABELS
@@ -47,10 +49,14 @@ def find_row(database: dict[str, list[dict]], key: str) -> dict:
     raise SystemExit(f"No quote with key {key!r} in the database")
 
 
-def resolve_theme(theme: str) -> str:
-    from idle_hours.runtime_theme import pick_random_theme
+def theme_pool() -> tuple[str, ...]:
+    """The themes ``random`` draws from: Idle Hours' rotation without the ones
+    that draw the time or print the Idle Hours name, which a weather frame is not."""
+    return tuple(t for t in random_theme_pool() if t not in CLOCK_FURNITURE_THEMES)
 
-    return pick_random_theme() if theme == "random" else theme
+
+def resolve_theme(theme: str) -> str:
+    return random.choice(theme_pool()) if theme == "random" else theme
 
 
 def render_png(row: dict | None, theme: str, time_str: str, mode: str, sleep: bool = False) -> bytes:
