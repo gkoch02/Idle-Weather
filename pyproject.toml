@@ -13,12 +13,12 @@ requires-python = ">=3.11"
 dependencies = [
     # The renderer, its themes and fonts, and the appliance plumbing
     # (atomic writes, pidfile, sd_notify, the Inky bridge) come from Idle Hours.
-    "idle-hours @ git+https://github.com/gkoch02/IdleHours@6ab8d44f5d199f5173e9d6c9e93b3098d9337690",
+    "idle-hours @ git+https://github.com/gkoch02/IdleHours@bfa89dcd8aa3c78ad94089666ee1ec7b26faed2e",
 ]
 
 [project.optional-dependencies]
 dev = ["pytest", "ruff"]
-pi = ["idle-hours[pi] @ git+https://github.com/gkoch02/IdleHours@6ab8d44f5d199f5173e9d6c9e93b3098d9337690"]
+pi = ["idle-hours[pi] @ git+https://github.com/gkoch02/IdleHours@bfa89dcd8aa3c78ad94089666ee1ec7b26faed2e"]
 
 [project.scripts]
 idle-weather = "idle_weather.cli:main"

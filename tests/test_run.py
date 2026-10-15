@@ -127,3 +127,13 @@ def test_repaints_when_the_shown_fallback_no_longer_fits(tmp_path):
     runner.weather.obs = hot_overcast
     assert "(from clouds)" in runner.tick(datetime(2026, 10, 14, 13, 10))
     assert len(calls) == 2
+
+
+def test_random_rotation_skips_time_surfaces(tmp_path):
+    from idle_hours.theme_names import TIME_SURFACE_THEMES
+
+    runner, _calls = make(tmp_path, RAIN, theme="random")
+    runner.state.theme_bag = ["tarot", "saloon"]  # saved before tarot left the pool
+    picks = [runner.next_theme() for _ in range(60)]
+    assert picks[0] == "saloon"
+    assert not set(picks) & TIME_SURFACE_THEMES
