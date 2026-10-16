@@ -1,6 +1,11 @@
 # Idle Weather
 
 [![CI](https://github.com/gkoch02/IdleWeather/actions/workflows/ci.yml/badge.svg)](https://github.com/gkoch02/IdleWeather/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/gkoch02/IdleWeather/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/gkoch02/IdleWeather/actions/workflows/github-code-scanning/codeql)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-3776AB?logo=python&logoColor=white)](pyproject.toml)
+[![Raspberry Pi](https://img.shields.io/badge/Raspberry%20Pi-C51A4A?logo=raspberrypi&logoColor=white)](https://www.raspberrypi.com)
+[![Idle Hours](https://img.shields.io/badge/needs-Idle%20Hours-8a5a2b)](https://github.com/gkoch02/IdleHours)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 Idle Weather is [Idle Hours](https://github.com/gkoch02/IdleHours) for the sky outside: it reads the current weather from Open-Meteo and shows a sentence from a public-domain novel that describes it, with the weather phrase picked out in bold. It renders through Idle Hours' themes onto the same 800×480 Inky Impression Spectra 6 panel.
 
